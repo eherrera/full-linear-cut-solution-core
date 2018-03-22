@@ -8,20 +8,22 @@ namespace FullLinearCutSolution.Core.Model
         public int Units { get; set; }
         public string Reference { get; set; }
         public int AppliedUnits { get; set; } = 0;
-        public bool Applied
-        {
-            get
-            {
-                return Units == AppliedUnits;
-            }
-        }
+        public bool Applied => Units == AppliedUnits;
     }
 
     public class OrderItemComparer : Comparer<OrderItem>
     {
         public override int Compare(OrderItem x, OrderItem y)
         {
-            return x.Measurement > y.Measurement ? 1 : 0;
+            if (x?.Measurement < y?.Measurement)
+            {
+                return 1;
+            }
+            if (x?.Measurement > y?.Measurement)
+            {
+                return -1;
+            }
+            return 0;
         }
     }
 }

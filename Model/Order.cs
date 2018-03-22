@@ -48,19 +48,7 @@ namespace FullLinearCutSolution.Core.Model
 
         public void Sort()
         {
-            //Items.Sort(new OrderItemComparer());
-            for (int i = 0; i < Items.Count - 1; i++)
-            {
-                for (int j = i + 1; j < Items.Count; j++)
-                {
-                    if (Items[j].Measurement > Items[i].Measurement)
-                    {
-                        var temp = Items[i];
-                        Items[i] = Items[j];
-                        Items[j] = temp;
-                    }
-                }
-            }
+            Items.Sort(new OrderItemComparer());
         }
     }
 }
