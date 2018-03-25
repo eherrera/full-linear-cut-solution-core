@@ -11,9 +11,9 @@ namespace FullLinearCutSolution.Core.Model
         public bool Applied => Units == AppliedUnits;
     }
 
-    public class OrderItemComparer : Comparer<OrderItem>
+    public class OrderItemComparer : IComparer<OrderItem>
     {
-        public override int Compare(OrderItem x, OrderItem y)
+        public int Compare(OrderItem x, OrderItem y)
         {
             if (x?.Measurement < y?.Measurement)
             {

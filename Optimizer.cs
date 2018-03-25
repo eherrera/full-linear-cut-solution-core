@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LinealCutOptimizer.Core.Model;
 
 namespace FullLinearCutSolution.Core
 {
     public class Optimizer
     {
-        public List<CutSolution> Optimize(Bar bar, Order order)
+        public List<CutSolution> Optimize(Bar bar, Order order, OptimizerStrategy strategy = OptimizerStrategy.Optimize)
         {
             if (bar == null || order == null)
             {
@@ -20,16 +21,18 @@ namespace FullLinearCutSolution.Core
 
             var result = new List<CutSolution>();
             var patterns = BuildPossiblePatterns(bar, order);
+            patterns.Sort(strategy);
+
             List<OrderItem> unappliedItems;
             // start always finding the best cases
-            var forceBestCase = true;
+            var forceBestCase = strategy == OptimizerStrategy.Optimize;
             do
             {
                 unappliedItems = order.UnappliedItems;
                 var appliedUnitsSum = unappliedItems.Sum(i => i.AppliedUnits);
                 foreach (var pattern in patterns)
                 {
-                    if (pattern.TrySatisfy(unappliedItems, forceBestCase: forceBestCase))
+                    if (pattern.TrySatisfy(unappliedItems, forceBestCase))
                     {
                         var solution = new CutSolution(bar);
                         solution.SetPattern(pattern);
@@ -60,11 +63,11 @@ namespace FullLinearCutSolution.Core
             order.Normalize();
             order.Sort();
             var orderMeasurements = order.Items.Select(i => i.Measurement).ToList();
-            Combine(strategies, orderMeasurements, barLength, strategies.Count, orderMeasurements.Count());
-            return strategies.SortPatterns();
+            Combine(strategies, orderMeasurements, barLength, strategies.Count, orderMeasurements.Count);
+            return strategies;
         }
 
-        private void Combine(List<CutPattern> patterns, List<decimal> orderLines, decimal barLength, int from, int to)
+        private static void Combine(List<CutPattern> patterns, IReadOnlyList<decimal> orderLines, decimal barLength, int from, int to)
         {
             if (from > barLength)
             {
@@ -72,9 +75,9 @@ namespace FullLinearCutSolution.Core
             }
             if (from == 0)
             {
-                for (int i = 0; i < orderLines.Count(); i++)
+                foreach (var m in orderLines)
                 {
-                    CutPattern pattern = new CutPattern { Measurements = new List<decimal> { orderLines[i] } };
+                    var pattern = new CutPattern { Measurements = new List<decimal> { m } };
                     TryAddPattern(pattern);
                 }
             }
@@ -83,15 +86,12 @@ namespace FullLinearCutSolution.Core
                 var lastPatterns = patterns.Where(s => s.Measurements.Count == from).ToList();
                 foreach (var pattern in lastPatterns)
                 {
-                    for (int i = 0; i < orderLines.Count(); i++)
+                    foreach (var candidate in orderLines)
                     {
-                        var candidate = orderLines[i];
-                        if (pattern.Measurements.Sum() + candidate <= barLength)
-                        {
-                            var patternClone = pattern.Clone();
-                            patternClone.Measurements.Add(candidate);
-                            TryAddPattern(patternClone);
-                        }
+                        if (pattern.Measurements.Sum() + candidate > barLength) continue;
+                        var patternClone = pattern.Clone();
+                        patternClone.Measurements.Add(candidate);
+                        TryAddPattern(patternClone);
                     }
                 }
             }
@@ -100,12 +100,9 @@ namespace FullLinearCutSolution.Core
 
             bool TryAddPattern(CutPattern cutPattern)
             {
-                if (cutPattern != null && !patterns.ContainsPattern(cutPattern))
-                {
-                    patterns.Add(cutPattern.Clone());
-                    return true;
-                }
-                return false;
+                if (cutPattern == null || patterns.ContainsPattern(cutPattern)) return false;
+                patterns.Add(cutPattern.Clone());
+                return true;
             }
         }
     }

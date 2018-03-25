@@ -45,6 +45,7 @@
     <Compile Include="Model\Bar.cs" />
     <Compile Include="Model\CutPattern.cs" />
     <Compile Include="Model\CutSolution.cs" />
+    <Compile Include="Model\Enums.cs" />
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\OrderItem.cs" />
     <Compile Include="Optimizer.cs" />

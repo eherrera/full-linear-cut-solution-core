@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using LinealCutOptimizer.Core.Model;
 
 namespace FullLinearCutSolution.Core.Model
 {
@@ -94,6 +96,49 @@ namespace FullLinearCutSolution.Core.Model
         }       
     }
 
+    public class CutPatternComparer : IComparer<CutPattern>
+    {
+        private readonly OptimizerStrategy _strategy;
+
+        public CutPatternComparer(OptimizerStrategy strategy)
+        {
+            _strategy = strategy;
+        }
+
+        public int Compare(CutPattern x, CutPattern y)
+        {
+            switch (_strategy)
+            {
+                case OptimizerStrategy.Optimize:
+                    var xSum = x?.Measurements?.Sum() ?? 0;
+                    var ySum = y?.Measurements?.Sum() ?? 0;
+                    if (xSum < ySum)
+                    {
+                        return 1;
+                    }
+                    if (xSum > ySum)
+                    {
+                        return -1;
+                    }
+                    var xCount = x?.Measurements?.Count;
+                    var yCount = y?.Measurements?.Count;
+                    if (xCount > yCount)
+                    {
+                        return 1;
+                    }
+                    if (xCount < yCount)
+                    {
+                        return -1;
+                    }
+                    return 0;
+                case OptimizerStrategy.Traditional:
+                    return 0;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+
     public static class CutPatternExtension
     {
         public static CutPattern Clone(this CutPattern original)
@@ -156,21 +201,9 @@ namespace FullLinearCutSolution.Core.Model
             return false;
         }
 
-        public static List<CutPattern> SortPatterns(this List<CutPattern> patterns)
+        public static void Sort(this List<CutPattern> patterns, OptimizerStrategy strategy)
         {
-            for (var i = 0; i < patterns.Count - 1; i++)
-            {
-                for (var j = i + 1; j < patterns.Count; j++)
-                {
-                    if (patterns[j].Measurements.Sum() > patterns[i].Measurements.Sum())
-                    {
-                        var temp = patterns[i];
-                        patterns[i] = patterns[j];
-                        patterns[j] = temp;
-                    }
-                }
-            }
-            return patterns;
+            patterns.Sort(new CutPatternComparer(strategy));
         }        
     }
 }
