@@ -36,6 +36,7 @@ namespace FullLinearCutSolution.Core
                     {
                         var solution = new CutSolution(bar);
                         solution.SetPattern(pattern);
+                        AnalizeWaste(solution, order, strategy);
                         result.Add(solution);
                         break;
                     }
@@ -49,6 +50,36 @@ namespace FullLinearCutSolution.Core
             while (unappliedItems.Count > 0);            
 
             return result;
+        }
+
+        private void AnalizeWaste(CutSolution solution, Order order, OptimizerStrategy strategy)
+        {
+            if (solution.Waste > 0)
+            {
+                var unappliedItems = order.UnappliedItems;
+                var unappliedItem = unappliedItems.FirstOrDefault(i => i.Measurement == solution.Waste);
+                if (unappliedItem == null)
+                {
+                    return;
+                }
+                var pattern = solution.GetCutPattern();
+                var usedBarsCountInPattern = pattern.Units.LastOrDefault();
+                var units = 0;
+                while (units < usedBarsCountInPattern)
+                {
+                    if (unappliedItem.Applied)
+                    {
+                        break;
+                    }
+                    unappliedItem.AppliedUnits++;
+                    units++;
+                }
+                if (units > 0)
+                {
+                    pattern.Measurements.Add(unappliedItem.Measurement);
+                    pattern.Units.Add(units);
+                }
+            }
         }
 
         private static bool ValidateOrder(Bar bar, Order order)

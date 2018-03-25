@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using LinealCutOptimizer.Core.Model;
 
 namespace FullLinearCutSolution.Core.Model
@@ -20,10 +21,13 @@ namespace FullLinearCutSolution.Core.Model
                 {
                     return false;
                 }
-                var unappliedUnits = item.Units - item.AppliedUnits;                    
-                if (unappliedUnits < min)
+                if (item != null)
                 {
-                    min = unappliedUnits;
+                    var unappliedUnits = item.Units - item.AppliedUnits;                    
+                    if (unappliedUnits < min)
+                    {
+                        min = unappliedUnits;
+                    }
                 }
                 if (forceBestCase)
                 {
@@ -110,32 +114,52 @@ namespace FullLinearCutSolution.Core.Model
             switch (_strategy)
             {
                 case OptimizerStrategy.Optimize:
-                    var xSum = x?.Measurements?.Sum() ?? 0;
-                    var ySum = y?.Measurements?.Sum() ?? 0;
-                    if (xSum < ySum)
-                    {
-                        return 1;
-                    }
-                    if (xSum > ySum)
-                    {
-                        return -1;
-                    }
-                    var xCount = x?.Measurements?.Count;
-                    var yCount = y?.Measurements?.Count;
-                    if (xCount > yCount)
-                    {
-                        return 1;
-                    }
-                    if (xCount < yCount)
-                    {
-                        return -1;
-                    }
-                    return 0;
+                    return CompareUsingOptimizeStrategy(x, y);
                 case OptimizerStrategy.Traditional:
-                    return 0;
+                    return CompareUsingTraditionalStrategy(x, y);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private static int CompareUsingTraditionalStrategy(CutPattern x, CutPattern y)
+        {
+            var xDistinctCount = x?.Measurements?.Distinct().Count() ?? 0;
+            var yDistinctCount = y?.Measurements?.Distinct().Count() ?? 0;
+            if (xDistinctCount > yDistinctCount)
+            {
+                return 1;
+            }
+            if (xDistinctCount < yDistinctCount)
+            {
+                return -1;
+            }
+            return CompareUsingOptimizeStrategy(x, y);
+        }
+
+        private static int CompareUsingOptimizeStrategy(CutPattern x, CutPattern y)
+        {
+            var xSum = x?.Measurements?.Sum() ?? 0;
+            var ySum = y?.Measurements?.Sum() ?? 0;
+            if (xSum < ySum)
+            {
+                return 1;
+            }
+            if (xSum > ySum)
+            {
+                return -1;
+            }
+            var xCount = x?.Measurements?.Count;
+            var yCount = y?.Measurements?.Count;
+            if (xCount > yCount)
+            {
+                return 1;
+            }
+            if (xCount < yCount)
+            {
+                return -1;
+            }
+            return 0;
         }
     }
 
