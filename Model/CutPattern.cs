@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
 using LinealCutOptimizer.Core.Model;
 
 namespace FullLinearCutSolution.Core.Model
@@ -42,20 +41,22 @@ namespace FullLinearCutSolution.Core.Model
             {
                 return false;
             }
-            
-            var result = true;
-            for (int i = 0; i < Measurements.Count; i++)
+
+            foreach (decimal m in Measurements)
             {
-                var item = items.FirstOrDefault(e => e.Measurement == Measurements[i]);
-                var unappliedUnits = item.Units - item.AppliedUnits;
-                if (unappliedUnits < min)
-                {                    
-                    min = unappliedUnits;
+                var item = items.FirstOrDefault(e => e.Measurement == m);
+                if (item != null)
+                {
+                    var unappliedUnits = item.Units - item.AppliedUnits;
+                    if (unappliedUnits < min)
+                    {                    
+                        min = unappliedUnits;
+                    }
                 }
-                item.AppliedUnits += min;
+                if (item != null) item.AppliedUnits += min;
                 Units.Add(min);
             }
-            return result;
+            return true;
         }
 
         private int FixMinimalUnitAmount(int min, List<OrderItem> items)
@@ -78,13 +79,11 @@ namespace FullLinearCutSolution.Core.Model
                 foreach (var d in uniqueMeasurements)
                 {
                     var item = items.FirstOrDefault(i => i.Measurement == d.Key);
-                    if (item != null)
+                    if (item == null) continue;
+                    var unappliedUnits = item.Units - item.AppliedUnits;
+                    if (min * d.Value > unappliedUnits)
                     {
-                        var unappliedUnits = item.Units - item.AppliedUnits;
-                        if (min * d.Value > unappliedUnits)
-                        {
-                            return false;
-                        }
+                        return false;
                     }
                 }
                 return true;
@@ -218,7 +217,7 @@ namespace FullLinearCutSolution.Core.Model
                     }
                     if (result)
                     {
-                        return result;
+                        return true;
                     }
                 }
             }
