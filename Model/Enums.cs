@@ -2,7 +2,7 @@
 {
     public enum OptimizerStrategy
     {
-        Optimize,
+        Optimize = 1,
         Traditional
     }
 }
