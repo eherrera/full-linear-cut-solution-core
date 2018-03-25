@@ -94,13 +94,14 @@ namespace FullLinearCutSolution.Core
             order.Normalize();
             order.Sort();
             var orderMeasurements = order.Items.Select(i => i.Measurement).ToList();
-            Combine(strategies, orderMeasurements, barLength, strategies.Count, orderMeasurements.Count);
+            var minMeasurement = orderMeasurements.Min();
+            Combine(strategies, orderMeasurements, barLength, strategies.Count, Convert.ToInt32(barLength / minMeasurement));
             return strategies;
         }
 
         private static void Combine(List<CutPattern> patterns, IReadOnlyList<decimal> orderLines, decimal barLength, int from, int to)
         {
-            if (from > barLength)
+            if (from > to)
             {
                 return;
             }
@@ -114,7 +115,9 @@ namespace FullLinearCutSolution.Core
             }
             else
             {
-                var lastPatterns = patterns.Where(s => s.Measurements.Count == from).ToList();
+                var lastPatterns = patterns
+                    .Where(s => s.Measurements.Count == from/* &&
+                                s.Measurements.Sum() + Convert.ToInt32(barLength / to) <= barLength*/).ToList();
                 foreach (var pattern in lastPatterns)
                 {
                     foreach (var candidate in orderLines)
