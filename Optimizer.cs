@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Combinatorics.Collections;
 using LinealCutOptimizer.Core.Model;
 
 namespace FullLinearCutSolution.Core
@@ -19,35 +20,92 @@ namespace FullLinearCutSolution.Core
                 throw new Exception("Exiten medidas de los elementos de la orden que exceden la longitud de la barra.");
             }
 
+            switch (strategy)
+            {
+                case OptimizerStrategy.Optimize:
+                    return SolveUsingOptimizeStrategy(bar, order);
+                case OptimizerStrategy.Traditional:
+                    return SolveUsingTraditionalStrategy(bar, order);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(strategy), strategy, null);
+            }
+        }
+
+        private static List<CutSolution> SolveUsingTraditionalStrategy(Bar bar, Order order)
+        {
             var result = new List<CutSolution>();
-            var patterns = BuildPossiblePatterns(bar, order);
-            patterns.Sort(strategy);
+            order.Normalize();
+            order.Sort();
+
+            var unappliedItems = order.UnappliedItems;
+            var unappliedMeasurements = unappliedItems.Select(u => u.Measurement).ToList();
+            var patterns = new List<CutPattern>();
+            foreach (var m in unappliedMeasurements)
+            {
+
+            }
+
+            return result;
+        }
+
+        private static List<CutSolution> SolveUsingOptimizeStrategy(Bar bar, Order order)
+        {
+            var result = new List<CutSolution>();
 
             List<OrderItem> unappliedItems;
             // start always finding the best cases
-            var forceBestCase = strategy == OptimizerStrategy.Optimize;
+            var forceBestCase = true;
+            order.Normalize();
+            order.Sort();
+            var combinationLowerIndex = 1;
             do
             {
                 unappliedItems = order.UnappliedItems;
-                var appliedUnitsSum = unappliedItems.Sum(i => i.AppliedUnits);
-                foreach (var pattern in patterns)
+                if (unappliedItems.Count == 0)
                 {
-                    if (pattern.TrySatisfy(unappliedItems, forceBestCase))
+                    break;
+                }
+                var unappliedMeasurements = unappliedItems.Select(u => u.Measurement).ToList();
+
+                var minMeasurement = unappliedMeasurements.Min();
+                var maxCombinationLength = Convert.ToInt32(bar.Length / minMeasurement);
+                var to = unappliedMeasurements.Count > maxCombinationLength
+                    ? unappliedMeasurements.Count
+                    //@fixme find the best to
+                    : maxCombinationLength / 2;
+
+                if (forceBestCase && combinationLowerIndex <= to || !forceBestCase && combinationLowerIndex >= 0)
+                {
+                    var combinations = new Combinations<decimal>(unappliedMeasurements.ToList(),
+                        forceBestCase ? combinationLowerIndex++ : combinationLowerIndex--,
+                        GenerateOption.WithRepetition);
+                    foreach (var combination in combinations)
                     {
+                        var combinationSum = combination.Sum();
+                        //finding exact combinations
+                        if (forceBestCase && combinationSum != bar.Length)
+                        {
+                            continue;
+                        }
+                        //finding partial combinations
+                        if (!forceBestCase && combinationSum > bar.Length)
+                        {
+                            continue;
+                        }
+                        var pattern = new CutPattern {Measurements = combination.ToList()};
+                        if (!pattern.TrySatisfy(unappliedItems, forceBestCase)) continue;
                         var solution = new CutSolution(bar);
                         solution.SetPattern(pattern);
-                        AnalizeWaste(solution, order, strategy);
                         result.Add(solution);
-                        break;
                     }
                 }
-                unappliedItems = order.UnappliedItems;                
-                if (appliedUnitsSum == unappliedItems.Sum(i => i.AppliedUnits))
+                else
                 {
+                    combinationLowerIndex = to;
                     forceBestCase = false;
                 }
-            }
-            while (unappliedItems.Count > 0);            
+            } while (unappliedItems.Count > 0);
+
 
             return result;
         }
@@ -85,59 +143,6 @@ namespace FullLinearCutSolution.Core
         private static bool ValidateOrder(Bar bar, Order order)
         {
             return order.Items.All(i => i.Measurement <= bar.Length);
-        }
-
-        public List<CutPattern> BuildPossiblePatterns(Bar bar, Order order)
-        {
-            var barLength = bar.Length;
-            var strategies = new List<CutPattern>();
-            order.Normalize();
-            order.Sort();
-            var orderMeasurements = order.Items.Select(i => i.Measurement).ToList();
-            var minMeasurement = orderMeasurements.Min();
-            Combine(strategies, orderMeasurements, barLength, strategies.Count, Convert.ToInt32(barLength / minMeasurement));
-            return strategies;
-        }
-
-        private static void Combine(List<CutPattern> patterns, IReadOnlyList<decimal> orderLines, decimal barLength, int from, int to)
-        {
-            if (from > to)
-            {
-                return;
-            }
-            if (from == 0)
-            {
-                foreach (var m in orderLines)
-                {
-                    var pattern = new CutPattern { Measurements = new List<decimal> { m } };
-                    TryAddPattern(pattern);
-                }
-            }
-            else
-            {
-                var lastPatterns = patterns
-                    .Where(s => s.Measurements.Count == from/* &&
-                                s.Measurements.Sum() + Convert.ToInt32(barLength / to) <= barLength*/).ToList();
-                foreach (var pattern in lastPatterns)
-                {
-                    foreach (var candidate in orderLines)
-                    {
-                        if (pattern.Measurements.Sum() + candidate > barLength) continue;
-                        var patternClone = pattern.Clone();
-                        patternClone.Measurements.Add(candidate);
-                        TryAddPattern(patternClone);
-                    }
-                }
-            }
-
-            Combine(patterns, orderLines, barLength, ++from, to);
-
-            bool TryAddPattern(CutPattern cutPattern)
-            {
-                if (cutPattern == null || patterns.ContainsPattern(cutPattern)) return false;
-                patterns.Add(cutPattern.Clone());
-                return true;
-            }
         }
     }
 }
