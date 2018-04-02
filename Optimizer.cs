@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Combinatorics.Collections;
 using LinealCutOptimizer.Core.Model;
 
 namespace FullLinearCutSolution.Core
@@ -23,7 +22,8 @@ namespace FullLinearCutSolution.Core
             switch (strategy)
             {
                 case OptimizerStrategy.Optimize:
-                    return SolveUsingOptimizeStrategy(bar, order);
+                    throw new ArgumentOutOfRangeException(nameof(strategy), strategy,
+                        "The Optimize strategy is not supported in this version");
                 case OptimizerStrategy.Traditional:
                     return SolveUsingTraditionalStrategy(bar, order);
                 default:
@@ -183,7 +183,7 @@ namespace FullLinearCutSolution.Core
             return result;
         }
 
-        private static List<CutSolution> SolveUsingOptimizeStrategy(Bar bar, Order order)
+        /*private static List<CutSolution> SolveUsingOptimizeStrategy(Bar bar, Order order)
         {
             var result = new List<CutSolution>();
 
@@ -243,7 +243,7 @@ namespace FullLinearCutSolution.Core
 
 
             return result;
-        }
+        }*/
 
         private static void AnalizeWaste(CutSolution solution, Order order, OptimizerStrategy strategy)
         {

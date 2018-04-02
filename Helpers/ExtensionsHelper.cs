@@ -4,7 +4,7 @@ namespace FullLinearCutSolution.Core.Helpers
 {
     public static class ExtensionsHelper
     {
-        private static readonly CultureInfo Culture = CultureInfo.DefaultThreadCurrentUICulture;    
+        private static readonly CultureInfo Culture = CultureInfo.CurrentUICulture;    
 
         public static string Round2(this decimal value, int decimalValue = 2)
         {
