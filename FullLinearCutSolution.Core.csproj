@@ -112,6 +112,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Autonumeric.cs" />
     <Compile Include="Helpers\ExtensionsHelper.cs" />
     <Compile Include="Model\Bar.cs" />
     <Compile Include="Model\CutPattern.cs" />

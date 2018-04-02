@@ -9,7 +9,22 @@ namespace FullLinearCutSolution.Core.Model
     {
         public List<decimal> Measurements { get; set; } = new List<decimal>();
         public List<int> Units { get; set; } = new List<int>();
-        public bool TrySatisfy(List<OrderItem> items, bool forceBestCase = false)
+
+        public int BarCount
+        {
+            get
+            {
+                if (Measurements.Count == 0)
+                {
+                    return 0;
+                }
+                var maxMeasurent = Measurements.Max();
+                var index = Measurements.IndexOf(maxMeasurent);
+                return Units[index];
+            }
+        }
+
+        public bool TrySatisfy(List<OrderItem> items, bool forceBestCase = false, int? maxUnits = null)
         {
             var min = int.MaxValue;
 
@@ -22,7 +37,7 @@ namespace FullLinearCutSolution.Core.Model
                 }
                 if (item != null)
                 {
-                    var unappliedUnits = item.Units - item.AppliedUnits;                    
+                    var unappliedUnits = item.Units - item.AppliedUnits;
                     if (unappliedUnits < min)
                     {
                         min = unappliedUnits;
@@ -49,9 +64,13 @@ namespace FullLinearCutSolution.Core.Model
                 {
                     var unappliedUnits = item.Units - item.AppliedUnits;
                     if (unappliedUnits < min)
-                    {                    
+                    {
                         min = unappliedUnits;
                     }
+                }
+                if (maxUnits != null && maxUnits < min)
+                {
+                    min = maxUnits.Value;
                 }
                 if (item != null) item.AppliedUnits += min;
                 Units.Add(min);
@@ -95,8 +114,7 @@ namespace FullLinearCutSolution.Core.Model
             }
 
             return min;
-
-        }       
+        }
     }
 
     public class CutPatternComparer : IComparer<CutPattern>
@@ -172,13 +190,14 @@ namespace FullLinearCutSolution.Core.Model
                 clone.Measurements.Add(m);
             }
             return clone;
-        }        
+        }
 
         public static bool ContainsPattern(this List<CutPattern> list, CutPattern cutPattern)
-        {            
+        {
             foreach (var thisPattern in list.Where(e => e.Measurements.Count == cutPattern.Measurements.Count).ToList())
             {
-                if (thisPattern.Measurements.All(m => cutPattern.Measurements.Contains(m)) && cutPattern.Measurements.All(s => thisPattern.Measurements.Contains(s)))
+                if (thisPattern.Measurements.All(m => cutPattern.Measurements.Contains(m)) &&
+                    cutPattern.Measurements.All(s => thisPattern.Measurements.Contains(s)))
                 {
                     var thisPatternDict = new Dictionary<decimal, int>();
                     var patternDict = new Dictionary<decimal, int>();
@@ -205,7 +224,7 @@ namespace FullLinearCutSolution.Core.Model
                     var result = false;
                     foreach (var dict in thisPatternDict)
                     {
-                        if (patternDict.ContainsKey(dict.Key))                        
+                        if (patternDict.ContainsKey(dict.Key))
                         {
                             if (dict.Value != patternDict[dict.Key])
                             {
@@ -227,6 +246,6 @@ namespace FullLinearCutSolution.Core.Model
         public static void Sort(this List<CutPattern> patterns, OptimizerStrategy strategy)
         {
             patterns.Sort(new CutPatternComparer(strategy));
-        }        
+        }
     }
 }
