@@ -15,6 +15,7 @@ namespace LinealCutOptimizer.Core
     public partial class Params
     {
         public int Id { get; set; }
+        public int MeasurementUnitId { get; set; }
     
         public virtual MeasurementUnit MeasurementUnit { get; set; }
     }

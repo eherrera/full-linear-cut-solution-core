@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace LinealCutOptimizer.Core.Repository.Implementation
@@ -8,11 +7,7 @@ namespace LinealCutOptimizer.Core.Repository.Implementation
     {
         public IList<BarPattern> GetAll()
         {
-            IList<BarPattern> result;
-            using (var context = new EFLinearCutSolutionEntities())
-            {
-                result = context.BarPatterns.ToList();
-            }
+            IList<BarPattern> result = DbContext.BarPatterns.ToList();
             return result;
         }
     }

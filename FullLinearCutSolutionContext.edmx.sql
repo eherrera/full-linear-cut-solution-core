@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/03/2018 13:19:06
+-- Date Created: 04/03/2018 14:56:55
 -- Generated from EDMX file: D:\projects\own\full-linear-cut-solution\full-linear-cut-solution-app\full-linear-cut-solution-core\FullLinearCutSolutionContext.edmx
 -- --------------------------------------------------
 
@@ -59,7 +59,7 @@ GO
 -- Creating table 'Params'
 CREATE TABLE [linear-cut-solution-db].[Params] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [MeasurementUnit_Id] int  NOT NULL
+    [MeasurementUnitId] int  NOT NULL
 );
 GO
 
@@ -89,10 +89,10 @@ GO
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
 
--- Creating foreign key on [MeasurementUnit_Id] in table 'Params'
+-- Creating foreign key on [MeasurementUnitId] in table 'Params'
 ALTER TABLE [linear-cut-solution-db].[Params]
 ADD CONSTRAINT [FK_MeasurementUnitParams]
-    FOREIGN KEY ([MeasurementUnit_Id])
+    FOREIGN KEY ([MeasurementUnitId])
     REFERENCES [linear-cut-solution-db].[MeasurementUnit]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -101,7 +101,7 @@ GO
 -- Creating non-clustered index for FOREIGN KEY 'FK_MeasurementUnitParams'
 CREATE INDEX [IX_FK_MeasurementUnitParams]
 ON [linear-cut-solution-db].[Params]
-    ([MeasurementUnit_Id]);
+    ([MeasurementUnitId]);
 GO
 
 -- --------------------------------------------------

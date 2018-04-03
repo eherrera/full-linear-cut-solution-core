@@ -5,14 +5,14 @@ namespace LinealCutOptimizer.Core.Repository.Implementation
 {
     internal class ParamsRepository : BaseRepository, IParamsRepository
     {
-        public Params Get()
+        public Params Get(bool includeDeps = true)
         {
-            Params result;
-            using (var context = new EFLinearCutSolutionEntities())
+            if (includeDeps)
             {
-                result = context.Params.Include(nameof(Params.MeasurementUnit)).FirstOrDefault();
+                return DbContext.Params.Include(nameof(Params.MeasurementUnit)).FirstOrDefault();
             }
-            return result;
+
+            return DbContext.Params.FirstOrDefault();
         }
 
         public Params BeginUpdate(Params pParams)

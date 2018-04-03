@@ -7,11 +7,7 @@ namespace LinealCutOptimizer.Core.Repository.Implementation
     {
         public IList<MeasurementUnit> GetAll()
         {
-            IList<MeasurementUnit> result;
-            using (var context = new EFLinearCutSolutionEntities())
-            {
-                result = context.MeasurementUnit.ToList();
-            }
+            IList<MeasurementUnit> result = DbContext.MeasurementUnit.ToList();
             return result;
         }
     }

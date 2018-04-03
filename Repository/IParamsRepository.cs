@@ -2,7 +2,7 @@
 {
     public interface IParamsRepository : IRepository
     {
-        Params Get();
+        Params Get(bool includeDeps = true);
         Params BeginUpdate(Params pParams);
     }
 }

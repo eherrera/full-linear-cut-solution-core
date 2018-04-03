@@ -36,7 +36,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="MeasurementUnit_Id" Type="int" Nullable="false" />
+    <Property Name="MeasurementUnitId" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="MeasurementUnitParams">
     <End Role="MeasurementUnit" Type="FullLinearCutSolutionContext.Store.MeasurementUnit" Multiplicity="1" />
@@ -46,7 +46,7 @@
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Params">
-        <PropertyRef Name="MeasurementUnit_Id" />
+        <PropertyRef Name="MeasurementUnitId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -74,7 +74,6 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Code" Type="String" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <NavigationProperty Name="Params" Relationship="FullLinearCutSolutionContext.MeasurementUnitParams" FromRole="MeasurementUnit" ToRole="Params" />
         </EntityType>
         <EntityType Name="BarPattern">
           <Key>
@@ -91,10 +90,19 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="MeasurementUnit" Relationship="FullLinearCutSolutionContext.MeasurementUnitParams" FromRole="Params" ToRole="MeasurementUnit" />
+          <Property Name="MeasurementUnitId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="MeasurementUnitParams">
           <End Type="FullLinearCutSolutionContext.MeasurementUnit" Role="MeasurementUnit" Multiplicity="1" />
-          <End Type="FullLinearCutSolutionContext.Params" Role="Params" Multiplicity="0..1" />
+          <End Type="FullLinearCutSolutionContext.Params" Role="Params" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MeasurementUnit">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Params">
+              <PropertyRef Name="MeasurementUnitId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -125,17 +133,10 @@
       <EntityTypeMapping TypeName="IsTypeOf(FullLinearCutSolutionContext.Params)">
         <MappingFragment StoreEntitySet="Params">
           <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="MeasurementUnitId" ColumnName="MeasurementUnitId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="MeasurementUnitParams" TypeName="FullLinearCutSolutionContext.MeasurementUnitParams" StoreEntitySet="Params">
-      <EndProperty Name="MeasurementUnit">
-        <ScalarProperty Name="Id" ColumnName="MeasurementUnit_Id" />
-      </EndProperty>
-      <EndProperty Name="Params">
-        <ScalarProperty Name="Id" ColumnName="Id" />
-      </EndProperty>
-    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
