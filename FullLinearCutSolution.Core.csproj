@@ -31,10 +31,31 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\full-linear-cut-solution\packages\EntityFramework.6.2.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\full-linear-cut-solution\packages\EntityFramework.6.2.0\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqToExcel, Version=1.11.0.0, Culture=neutral, PublicKeyToken=9c8ea65a58f03f1f, processorArchitecture=MSIL">
+      <HintPath>..\full-linear-cut-solution\packages\LinqToExcel.1.11.0\lib\LinqToExcel.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\full-linear-cut-solution\packages\LinqToExcel.1.11.0\lib\Remotion.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Data.Linq, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\full-linear-cut-solution\packages\LinqToExcel.1.11.0\lib\Remotion.Data.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Interfaces, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\full-linear-cut-solution\packages\LinqToExcel.1.11.0\lib\Remotion.Interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,8 +63,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BarPattern.cs">
+      <DependentUpon>FullLinearCutSolutionContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CodeGenerator.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeGenerator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Seeder.cs" />
+    <Compile Include="FullLinearCutSolutionContext.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FullLinearCutSolutionContext.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FullLinearCutSolutionContext.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FullLinearCutSolutionContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FullLinearCutSolutionContext.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FullLinearCutSolutionContext.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\Autonumeric.cs" />
     <Compile Include="Helpers\ExtensionsHelper.cs" />
+    <Compile Include="MeasurementUnit.cs">
+      <DependentUpon>FullLinearCutSolutionContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\Bar.cs" />
     <Compile Include="Model\CutPattern.cs" />
     <Compile Include="Model\CutSolution.cs" />
@@ -51,10 +99,42 @@
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\OrderItem.cs" />
     <Compile Include="Optimizer.cs" />
+    <Compile Include="Params.cs">
+      <DependentUpon>FullLinearCutSolutionContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <EntityDeploy Include="FullLinearCutSolutionContext.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>FullLinearCutSolutionContext.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="FullLinearCutSolutionContext.edmx.diagram">
+      <DependentUpon>FullLinearCutSolutionContext.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CodeGenerator.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CodeGenerator.cs</LastGenOutput>
+      <DependentUpon>FullLinearCutSolutionContext.edmx</DependentUpon>
+    </Content>
+    <Content Include="FullLinearCutSolutionContext.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FullLinearCutSolutionContext.Context.cs</LastGenOutput>
+      <DependentUpon>FullLinearCutSolutionContext.edmx</DependentUpon>
+    </Content>
+    <Content Include="FullLinearCutSolutionContext.edmx.sql" />
+    <Content Include="FullLinearCutSolutionContext.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FullLinearCutSolutionContext.cs</LastGenOutput>
+      <DependentUpon>FullLinearCutSolutionContext.edmx</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
