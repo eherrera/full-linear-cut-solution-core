@@ -103,6 +103,15 @@
       <DependentUpon>FullLinearCutSolutionContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\IBarPatternRepository.cs" />
+    <Compile Include="Repository\IMesurementRepository.cs" />
+    <Compile Include="Repository\Implementation\BarPatternRepository.cs" />
+    <Compile Include="Repository\Implementation\BaseRepository.cs" />
+    <Compile Include="Repository\Implementation\MeasurementRepository.cs" />
+    <Compile Include="Repository\Implementation\ParamsRepository.cs" />
+    <Compile Include="Repository\IParamsRepository.cs" />
+    <Compile Include="Repository\IRepository.cs" />
+    <Compile Include="Repository\RepositoryFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

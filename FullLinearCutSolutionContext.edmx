@@ -35,7 +35,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="MeasurementUnit_Id" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="MeasurementUnitParams">
@@ -89,7 +89,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="MeasurementUnit" Relationship="FullLinearCutSolutionContext.MeasurementUnitParams" FromRole="Params" ToRole="MeasurementUnit" />
         </EntityType>
         <Association Name="MeasurementUnitParams">
