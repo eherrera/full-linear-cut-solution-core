@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="fd55b367538847fb809c604d6c6cf81c" Name="Diagram1" >
         <EntityTypeShape EntityType="FullLinearCutSolutionContext.MeasurementUnit" Width="1.875" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FullLinearCutSolutionContext.BarPattern" Width="2.125" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="FullLinearCutSolutionContext.BarPattern" Width="2.125" PointX="3.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="FullLinearCutSolutionContext.Params" Width="2.25" PointX="0.75" PointY="3.25" />
         <AssociationConnector Association="FullLinearCutSolutionContext.MeasurementUnitParams" />
       </Diagram>
