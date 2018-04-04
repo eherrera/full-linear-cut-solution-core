@@ -32,6 +32,35 @@ namespace FullLinearCutSolution.Core.Model
             return _bar;
         }
 
+        public Dictionary<decimal, int> Cuts
+        {
+            get
+            {
+                var cuts = new Dictionary<decimal, int>();
+                for (var i = 0; i < _cutPattern.Measurements.Count; i++)
+                {
+                    if (cuts.ContainsKey(_cutPattern.Measurements[i]))
+                    {
+                        cuts[_cutPattern.Measurements[i]] = _cutPattern.Units[i];
+                    }
+                    else
+                    {
+                        cuts.Add(_cutPattern.Measurements[i], _cutPattern.Units[i]);
+                    }
+                }
+                return cuts;
+            }
+        }
+
+        public string CutsRepresentation
+        {
+            get
+            {
+                var resultList = Cuts.Select(cut => $"({cut.Key}*{cut.Value})").ToList();
+                return string.Join(" + ", resultList);
+            }
+        }
+
         public IList<CutSolution> SubSolutions { get; set; } = new List<CutSolution>();
 
         public decimal Waste => _bar.Length - _cutPattern?.Measurements.Sum() ?? 0;
