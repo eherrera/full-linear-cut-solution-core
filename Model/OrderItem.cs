@@ -4,6 +4,7 @@ namespace FullLinearCutSolution.Core.Model
 {
     public class OrderItem
     {
+        public string Group { get; set; }
         public decimal Measurement { get; set; }
         public int Units { get; set; }
         public string Reference { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using FullLinearCutSolution.Core;
 
 namespace LinealCutOptimizer.Core.Repository.Implementation
 {

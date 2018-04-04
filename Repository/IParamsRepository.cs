@@ -1,4 +1,6 @@
-﻿namespace LinealCutOptimizer.Core.Repository
+﻿using FullLinearCutSolution.Core;
+
+namespace LinealCutOptimizer.Core.Repository
 {
     public interface IParamsRepository : IRepository
     {

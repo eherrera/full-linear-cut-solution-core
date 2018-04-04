@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity;
 using System.Linq;
+using FullLinearCutSolution.Core;
 
 namespace LinealCutOptimizer.Core.Repository.Implementation
 {

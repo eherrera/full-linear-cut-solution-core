@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LinealCutOptimizer.Core
+namespace FullLinearCutSolution.Core
 {
     using System;
     using System.Collections.Generic;
