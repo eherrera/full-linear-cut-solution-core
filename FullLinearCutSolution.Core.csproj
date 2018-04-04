@@ -90,6 +90,7 @@
     <Compile Include="Helpers\Autonumeric.cs" />
     <Compile Include="Excel\ExcelHelper.cs" />
     <Compile Include="Helpers\ExtensionsHelper.cs" />
+    <Compile Include="Helpers\HtmlHelper.cs" />
     <Compile Include="MeasurementUnit.cs">
       <DependentUpon>FullLinearCutSolutionContext.tt</DependentUpon>
     </Compile>

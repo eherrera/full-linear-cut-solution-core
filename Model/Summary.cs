@@ -28,7 +28,8 @@ namespace LinealCutOptimizer.Core.Model
                 }
                 var bar = new Bar {Diameter = barPattern.Diameter, Length = barPattern.Length};
 
-                var solutions = optimizer.Optimize(bar, new Order {Items = linesByReference.Value});
+                var solutions = optimizer.Optimize(bar, new Order {Items = linesByReference.Value},
+                    OptimizerStrategy.Traditional);
                 SolutionsByReference.Add(linesByReference.Key, solutions);
             }
         }
